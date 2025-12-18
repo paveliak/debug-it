@@ -55,8 +55,8 @@ runs:
         $DEVTUNNEL user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$OIDC_TOKEN"
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
-        TENANT_ID: ${{ inputs.tenant_id }}
-        CLIENT_ID: ${{ inputs.client_id }}
+        TENANT_ID: ${{ secrets.TENANT_ID }}
+        CLIENT_ID: ${{ secrets.CLIENT_ID }}
 
     - name: Start DevTunnel
       shell: bash
