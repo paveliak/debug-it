@@ -44,4 +44,4 @@ runs:
         ls -al "$DEVTUNNEL"
         "$DEVTUNNEL" -h
       env:
-        DEVTUNNEL: ${{ steps.install.outputs.pathname }}
+        DEVTUNNEL: "${{ steps.install.outputs.pathname }}"
