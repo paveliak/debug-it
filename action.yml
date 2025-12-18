@@ -30,12 +30,15 @@ runs:
         CURRENT_USER: ${{ github.actor }}
 
     - name: Install DevTunnel CLI
+      id: install
       shell: bash
       run: |
         curl -sL https://aka.ms/DevTunnelCliInstall | bash
+        echo "pathname=~/bin/devtunnel" >> $GITHUB_OUTPUT
 
     - name: Test
       shell: bash
       run: |
-        ls -al ~/bin
-        devtunnel -h
+        $DEVTUNNEL -h
+      env:
+        DEVTUNNEL: ${{ steps.isntall.outputs.pathname }}
