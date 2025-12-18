@@ -36,12 +36,18 @@ runs:
         curl -sL https://aka.ms/DevTunnelCliInstall | bash
         echo "pathname=$HOME/bin/devtunnel" >> $GITHUB_OUTPUT
 
-    - name: Test
+    - name: Login
       shell: bash
       run: |
-        ls -al ~/bin
-        ls -al ~/bin/devtunnel
-        ls -al "$DEVTUNNEL"
-        "$DEVTUNNEL" -h
+        run: |
+          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
+          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" == "null" ]; then
+              echo "::error::Failed to retrieve OIDC token."
+              exit 1
+          fi
+
+          devtunnel user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$OIDC_TOKEN"
       env:
-        DEVTUNNEL: "${{ steps.install.outputs.pathname }}"
+        DEVTUNNEL: ${{ steps.install.outputs.pathname }}
+        TENANT_ID: ${{ inputs.tenant_id }}
+        CLIENT_ID: ${{ inputs.client_id }}
