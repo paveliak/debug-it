@@ -1,0 +1,40 @@
+name: "Debug-It"
+description: "Connect to the GitHub Actions runner via SSH/RDP/VNC."
+
+inputs:
+  tenant-id:
+    description: "Azure Entra Tenant Id"
+    required: true
+  client-id:
+    description: "Azure Entra Client Id"
+    required: true
+  authorized-user:
+    description: "User authorized to access the runner"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Add SSH keys
+      shell: bash
+      run: |
+        SSH_KEYS_URL="https://github.com/${AUTHORIZED_USER:-$CURRENT_USER}.keys"
+        echo "Setting public keys from $SSH_KEYS_URL"
+        mkdir -p ~/.ssh
+        touch ~/.ssh/authorized_keys
+        curl $SSH_KEYS_URL >> ~/.ssh/authorized_keys
+        chmod 700 ~/.ssh
+        chmod 600 ~/.ssh/authorized_keys
+      env:
+        AUTHORIZED_USER: ${{ inputs.authorized-user }}
+        CURRENT_USER: ${{ github.actor }}
+
+    - name: Install DevTunnel CLI
+      shell: bash
+      run: |
+        curl -sL https://aka.ms/DevTunnelCliInstall | bash
+
+    - name: Test
+      shell: bash
+      run: |
+        devtunnel -h
