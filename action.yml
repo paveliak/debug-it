@@ -34,7 +34,7 @@ runs:
       shell: bash
       run: |
         curl -sL https://aka.ms/DevTunnelCliInstall | bash
-        echo "pathname=~/bin/devtunnel" >> $GITHUB_OUTPUT
+        echo "pathname=$HOME/bin/devtunnel" >> $GITHUB_OUTPUT
 
     - name: Test
       shell: bash
