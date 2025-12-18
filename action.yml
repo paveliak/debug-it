@@ -39,7 +39,7 @@ runs:
     - name: Test
       shell: bash
       run: |
-        ls -al $DEVTUNNEL
+        ls -al ~/bin
         $DEVTUNNEL -h
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
