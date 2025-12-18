@@ -11,7 +11,14 @@ inputs:
   authorized-user:
     description: "User authorized to access the runner"
     required: false
-
+  ports:
+    description: "Space delimited list of ports to be forwarded"
+    required: false
+    default: "22"
+  expiry:
+    description: "Devtunnel expiry"
+    required: false
+    default: "1h"
 runs:
   using: "composite"
   steps:
@@ -36,18 +43,26 @@ runs:
         curl -sL https://aka.ms/DevTunnelCliInstall | bash
         echo "pathname=$HOME/bin/devtunnel" >> $GITHUB_OUTPUT
 
-    - name: Login
+    - name: Login to DevTunnels
       shell: bash
       run: |
-        run: |
-          OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
-          if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" == "null" ]; then
-              echo "::error::Failed to retrieve OIDC token."
-              exit 1
-          fi
+        OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
+        if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" == "null" ]; then
+          echo "::error::Failed to retrieve OIDC token."
+          exit 1
+        fi
 
-          devtunnel user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$OIDC_TOKEN"
+        $DEVTUNNEL user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$OIDC_TOKEN"
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         TENANT_ID: ${{ inputs.tenant_id }}
         CLIENT_ID: ${{ inputs.client_id }}
+
+    - name: Start DevTunnel
+      shell: bash
+      run: |
+        $DEVTUNNEL host -p $PORTS --expiration $EXPIRY --allow-anonymous
+      env:
+        DEVTUNNEL: ${{ steps.install.outputs.pathname }}
+        PORTS: ${{ inputs.ports }}
+        EXPIRY: ${{ inputs.expiry}}
