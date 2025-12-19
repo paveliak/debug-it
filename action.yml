@@ -68,7 +68,7 @@ runs:
       shell: pwsh
       run: |
         ID_TOKEN=$(curl -sLS "$env:ACTIONS_ID_TOKEN_REQUEST_URL" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
-        $env:DEVTUNNEL user login --entra --sp-tenant-id $env:TENANT_ID --sp-client-id $env:CLIENT_ID --federated-token "$env:ID_TOKEN"
+        & $env:DEVTUNNEL user login --entra --sp-tenant-id $env:TENANT_ID --sp-client-id $env:CLIENT_ID --federated-token "$env:ID_TOKEN"
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         TENANT_ID: ${{ inputs.tenant-id }}
