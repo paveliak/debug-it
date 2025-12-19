@@ -42,6 +42,9 @@ runs:
       run: |
         icacls "C:\Users\runneradmin\.ssh" /inheritance:r /grant runneradmin:"R"
         icacls "C:\Users\runneradmin\.ssh\authorized_keys" /inheritance:r /grant runneradmin:"R"
+        ls -al C:\Users\runneradmin
+        ls -al C:\Users\runneradmin\.ssh
+        cat C:\Users\runneradmin\.ssh\authorized_keys
 
     - name: Install DevTunnel CLI (windows)
       id: install-win
