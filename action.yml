@@ -22,9 +22,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: echo "${{ runner.os }}"
-      shell: bash
-  
     - name: Add SSH keys
       if: ${{ runner.os != 'Windows' }}
       shell: bash
