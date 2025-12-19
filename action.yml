@@ -23,6 +23,7 @@ runs:
   using: "composite"
   steps:
     - name: Add SSH keys
+      if: ${{ runner.os != 'Windows' }}
       shell: bash
       run: |
         SSH_KEYS_URL="https://github.com/${AUTHORIZED_USER:-$CURRENT_USER}.keys"
@@ -36,23 +37,37 @@ runs:
         AUTHORIZED_USER: ${{ inputs.authorized-user }}
         CURRENT_USER: ${{ github.actor }}
 
-    - name: Install DevTunnel CLI
-      id: install
+    - name: Install DevTunnel CLI (windows)
+      id: install-win
+      if: ${{ runner.os == 'Windows' }}
+      shell: pwsh
+      run: |
+        mkdir -p $HOME/bin
+        curl -sL -o $HOME/bin/devtunnel.exe https://aka.ms/TunnelsCliDownload/win-x64
+        echo "pathname=$HOME/bin/devtunnel.exe" >> $env:GITHUB_OUTPUT
+
+    - name: Install DevTunnel CLI (linux, macOS)
+      id: install-other
+      if: ${{ runner.os != 'Windows' }}
       shell: bash
       run: |
         curl -sL https://aka.ms/DevTunnelCliInstall | bash
         echo "pathname=$HOME/bin/devtunnel" >> $GITHUB_OUTPUT
 
-    - name: Login to DevTunnels
-      shell: bash
-      run: |
-        OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
-        if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" == "null" ]; then
-          echo "::error::Failed to retrieve OIDC token."
-          exit 1
-        fi
+    - name: Set context
+      id: install
+      shell: pwsh
+        if ($env:RUNNER_OS -eq "Windows") {
+          echo "pathname=${{ steps.install-win.outputs.pathname }}" >> $env:GITHUB_OUTPUT
+        } else {
+          echo "pathname=${{ steps.install-other.outputs.pathname }}" >> $env:GITHUB_OUTPUT
+        }
 
-        $DEVTUNNEL user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$OIDC_TOKEN"
+    - name: Login to DevTunnels
+      shell: pwsh
+      run: |
+        ID_TOKEN=$(curl -sLS "$env:ACTIONS_ID_TOKEN_REQUEST_URL" -H "User-Agent: actions/oidc-client" -H "Authorization: Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
+        $env:DEVTUNNEL user login --entra --sp-tenant-id $env:TENANT_ID --sp-client-id $env:CLIENT_ID --federated-token "$env:ID_TOKEN"
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         TENANT_ID: ${{ inputs.tenant-id }}
