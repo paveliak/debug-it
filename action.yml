@@ -12,7 +12,7 @@ inputs:
     description: "User authorized to access the runner"
     required: false
   ports:
-    description: "Space delimited list of ports to be forwarded"
+    description: "Comma delimited list of ports to be forwarded"
     required: false
     default: "22"
   expiry:
@@ -61,6 +61,7 @@ runs:
     - name: Start DevTunnel
       shell: bash
       run: |
+        PORTS=$(echo "$PORTS" | sed 's/,/ -p /g; s/^/-p /')
         $DEVTUNNEL host -p $PORTS --expiration $EXPIRY --allow-anonymous
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
