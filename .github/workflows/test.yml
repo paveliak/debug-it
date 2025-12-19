@@ -11,8 +11,10 @@ jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest, self-hosted]
+
     steps:
       - name: Fail the job
         run: exit 1
