@@ -21,7 +21,7 @@ jobs:
 
       - name: Debug failed job
         if: ${{ failure() }}
-        uses: paveliak/debug-it@windows
+        uses: paveliak/debug-it@main
         with:
           tenant-id: ${{ secrets.TENANT_ID }}
           client-id: ${{ secrets.CLIENT_ID }}
