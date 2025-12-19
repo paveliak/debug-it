@@ -41,7 +41,7 @@ runs:
       shell: bash
       run: |
         cp "$HOME/.ssh/authorized_keys" "$ProgramData/ssh/administrators_authorized_keys"
-        icacls "$ProgramData/ssh/administrators_authorized_keys" "\\inheritance:r" "/grant" "Administrators:F" "/grant" "SYSTEM:F"
+        icacls "$ProgramData/ssh/administrators_authorized_keys" "\/inheritance:r" "/grant" "Administrators:F" "/grant" "SYSTEM:F"
 
     - name: Install DevTunnel CLI (windows)
       id: install-win
