@@ -23,7 +23,6 @@ runs:
   using: "composite"
   steps:
     - name: Add SSH keys
-      if: ${{ runner.os != 'Windows' }}
       shell: bash
       run: |
         SSH_KEYS_URL="https://github.com/${AUTHORIZED_USER:-$CURRENT_USER}.keys"
