@@ -46,11 +46,11 @@ runs:
     - name: Install DevTunnel CLI (windows)
       id: install-win
       if: ${{ runner.os == 'Windows' }}
-      shell: pwsh
+      shell: bash
       run: |
         mkdir -p $HOME/bin
         curl -sL -o $HOME/bin/devtunnel.exe https://aka.ms/TunnelsCliDownload/win-x64
-        echo "pathname=$HOME/bin/devtunnel.exe" >> $env:GITHUB_OUTPUT
+        echo "pathname=$HOME/bin/devtunnel.exe" >> $GITHUB_OUTPUT
 
     - name: Install DevTunnel CLI (linux, macOS)
       id: install-other
