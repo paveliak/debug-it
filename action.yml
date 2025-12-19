@@ -57,6 +57,7 @@ runs:
     - name: Set context
       id: install
       shell: pwsh
+      run: |
         if ($env:RUNNER_OS -eq "Windows") {
           echo "pathname=${{ steps.install-win.outputs.pathname }}" >> $env:GITHUB_OUTPUT
         } else {
