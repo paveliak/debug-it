@@ -36,12 +36,12 @@ runs:
         AUTHORIZED_USER: ${{ inputs.authorized-user }}
         CURRENT_USER: ${{ github.actor }}
 
-    - name: Set SSH permissions (windows)
+    - name: Configure SSH permissions (windows)
       if: ${{ runner.os == 'Windows' }}
       shell: pwsh
       run: |
-        #cp C:\Users\runneradmin\.ssh\authorized_keys C:\ProgramData\ssh\administrators_authorized_keys
-        #icacls "C:\ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+        cp "$HOME\.ssh\authorized_keys" "$env:ProgramData\ssh\administrators_authorized_keys"
+        icacls "$env:ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
 
     - name: Install DevTunnel CLI (windows)
       id: install-win
