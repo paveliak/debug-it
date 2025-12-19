@@ -40,8 +40,8 @@ runs:
       if: ${{ runner.os == 'Windows' }}
       shell: pwsh
       run: |
-        icacls "C:\Users\runner\.ssh" /inheritance:r /grant runner:"R"
-        icacls "C:\Users\runner\.ssh\authorized_keys" /inheritance:r /grant runner:"R"
+        icacls "C:\Users\runneradmin\.ssh" /inheritance:r /grant runneradmin:"R"
+        icacls "C:\Users\runneradmin\.ssh\authorized_keys" /inheritance:r /grant runneradmin:"R"
 
     - name: Install DevTunnel CLI (windows)
       id: install-win
