@@ -79,7 +79,7 @@ runs:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         TENANT_ID: ${{ inputs.tenant-id }}
         CLIENT_ID: ${{ inputs.client-id }}
-  
+
     - name: Start DevTunnel
       shell: bash
       run: |
