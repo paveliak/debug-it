@@ -62,35 +62,19 @@ runs:
 
     - name: Set context
       id: install
-      shell: pwsh
+      shell: bash
       run: |
-        if ($env:RUNNER_OS -eq "Windows") {
-          echo "pathname=${{ steps.install-win.outputs.pathname }}" >> $env:GITHUB_OUTPUT
-        } else {
-          echo "pathname=${{ steps.install-other.outputs.pathname }}" >> $env:GITHUB_OUTPUT
-        }
-
-#    - name: Login to DevTunnels
-#      shell: pwsh
-#      run: |
-#        $response = Invoke-RestMethod -Uri "$env:ACTIONS_ID_TOKEN_REQUEST_URL" -Headers @{ "Authorization" = "Bearer $env:ACTIONS_ID_TOKEN_REQUEST_TOKEN" }
-#        $id_token = $response.value
-#        & $env:DEVTUNNEL user login --entra --sp-tenant-id $env:TENANT_ID --sp-client-id $env:CLIENT_ID --federated-token "$id_token"
-#      env:
-#        DEVTUNNEL: ${{ steps.install.outputs.pathname }}
-#        TENANT_ID: ${{ inputs.tenant-id }}
-#        CLIENT_ID: ${{ inputs.client-id }}
+        if [ "$RUNNER_OS" = "Windows" ]; then
+          echo "pathname=${{ steps.install-win.outputs.pathname }}" >> $GITHUB_OUTPUT
+        else
+          echo "pathname=${{ steps.install-other.outputs.pathname }}" >> $GITHUB_OUTPUT
+        fi
 
     - name: Login to DevTunnels
       shell: bash
       run: |
-        OIDC_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
-        if [ -z "$OIDC_TOKEN" ] || [ "$OIDC_TOKEN" == "null" ]; then
-          echo "::error::Failed to retrieve OIDC token."
-          exit 1
-        fi
-
-        $DEVTUNNEL user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$OIDC_TOKEN"
+        ID_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
+        $DEVTUNNEL user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$ID_TOKEN"
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         TENANT_ID: ${{ inputs.tenant-id }}
