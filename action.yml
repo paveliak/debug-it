@@ -36,6 +36,13 @@ runs:
         AUTHORIZED_USER: ${{ inputs.authorized-user }}
         CURRENT_USER: ${{ github.actor }}
 
+    - name: Set permissions
+      if: ${{ runner.os == 'Windows' }}
+      shell: pwsh
+      run: |
+        icacls "C:\Users\runner\.ssh" /inheritance:r /grant runner:"R"
+        icacls "C:\Users\runner\.ssh\authorized_keys" /inheritance:r /grant runner:"R"
+
     - name: Install DevTunnel CLI (windows)
       id: install-win
       if: ${{ runner.os == 'Windows' }}
