@@ -25,3 +25,4 @@ jobs:
         with:
           tenant-id: ${{ secrets.TENANT_ID }}
           client-id: ${{ secrets.CLIENT_ID }}
+          ports: "22 3389 5900"
