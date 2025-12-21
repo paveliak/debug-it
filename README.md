@@ -8,6 +8,7 @@ Authentication uses OIDC so your Entra app needs to have federated credentials c
 
 Example usage:
 
+1. Add this yaml into your workflow
 ```yaml
 permissions:
   id-token: write
@@ -21,3 +22,6 @@ jobs:
           tenant-id: ${{ secrets.TENANT_ID }}
           client-id: ${{ secrets.CLIENT_ID }}
 ```
+
+2. Copy/paste DevTunnel id from the Actions job log and connect to it with `devtunnel connect <devtunnel-id>`
+3. Observe which local port was forwarded (suppose 55555), open another terminal window and connect with `ssh -p 55555 runner@127.0.0.1` (on Windows the user is `runneradmin`)
