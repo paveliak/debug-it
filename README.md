@@ -1,12 +1,9 @@
 # debug-it
 
-This action allows connecting via SSH (VNC/RDP) to the Actions runner using DevTunnels.
-Entra Auth is used to create tunnel (You can create free Azure account and Entra is free).
-GitHub credentials are accepted by DevTunnels too and Entra was picked as it allows non-interactive auth.
+This action allows connecting via SSH to the Actions runner using DevTunnels. For MacOS and Windows runners you can also connect via VNC and RDP respectively (in addition to SSH).
+GitHub credentials are used to authenticate to a devtunnel scoping access to only the user that does the debugging.
 
-Authentication uses OIDC so your Entra app needs to have federated credentials configured.
-
-**NOTE**: This action creates a tunnel with **anonymous access enabled**. If used in a public repo everyone would be able to observe devtunnel id in the logs, connect to your runner and exfiltrate secrets (if any). 
+**NOTE**: Be cautious when using this action with self-hosted runners as the GitHub creadentials you use wtihin the runner to create a tunnel could get exposed to other workloads on the machine. 
 
 Example usage:
 
@@ -25,9 +22,6 @@ jobs:
       - name: Debug failed job
         uses: paveliak/debug-it@main
         if: ${{ failure() && runner.debug == 1 }}
-        with:
-          tenant-id: ${{ secrets.TENANT_ID }}
-          client-id: ${{ secrets.CLIENT_ID }}
 ```
 
 2. Copy/paste DevTunnel id from the Actions job log and connect to it with `devtunnel connect <devtunnel-id>`
