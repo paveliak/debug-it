@@ -9,9 +9,6 @@ Example usage:
 
 1. Add this yaml into your workflow. When job fails you can can [rerun it with debugging enabled](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs#re-running-failed-jobs-in-a-workflow) and that would execute the debugging step. Authenticate to DevTunnel using the device code in the job log.
 ```yaml
-permissions:
-  id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
