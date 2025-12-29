@@ -6,6 +6,8 @@ GitHub credentials are accepted by DevTunnels too and Entra was picked as it all
 
 Authentication uses OIDC so your Entra app needs to have federated credentials configured.
 
+**NOTE**: This action creates a tunnel with **anonymous access enabled**. If used in a public repo everyone would be able to observe devtunnel id in the logs, connect to your runner and exfiltrate secrets (if any). 
+
 Example usage:
 
 1. Add this yaml into your workflow. When job fails you can can [rerun it with debugging enabled](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs#re-running-failed-jobs-in-a-workflow) and that would execute the debugging step
