@@ -75,7 +75,7 @@ runs:
       shell: bash
       run: |
         PORTS=$(echo "$PORTS" | sed 's/,/ -p /g; s/^/-p /')
-        $DEVTUNNEL host $PORTS --expiration $EXPIRY --allow-anonymous
+        $DEVTUNNEL host $PORTS --expiration $EXPIRY
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         PORTS: ${{ inputs.ports }}
