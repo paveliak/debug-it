@@ -3,10 +3,6 @@ name: Test
 on:
   workflow_dispatch:
 
-permissions:
-  id-token: write
-  contents: read
-
 jobs:
   test:
     runs-on: ${{ matrix.os }}
@@ -23,6 +19,4 @@ jobs:
         if: ${{ failure() }}
         uses: paveliak/debug-it@main
         with:
-          tenant-id: ${{ secrets.TENANT_ID }}
-          client-id: ${{ secrets.CLIENT_ID }}
           ports: "22,3389,5900"
