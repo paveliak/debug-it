@@ -2,12 +2,6 @@ name: "Debug-It"
 description: "Connect to the GitHub Actions runner via SSH/RDP/VNC."
 
 inputs:
-  tenant-id:
-    description: "Azure Entra Tenant Id"
-    required: true
-  client-id:
-    description: "Azure Entra Client Id"
-    required: true
   authorized-user:
     description: "User authorized to access the runner"
     required: false
@@ -73,12 +67,9 @@ runs:
     - name: Login to DevTunnels
       shell: bash
       run: |
-        ID_TOKEN=$(curl -sLS "${ACTIONS_ID_TOKEN_REQUEST_URL}" -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" | jq -r .value)
-        $DEVTUNNEL user login --entra --sp-tenant-id $TENANT_ID --sp-client-id $CLIENT_ID --federated-token "$ID_TOKEN"
+        $DEVTUNNEL user login --github --use-device-code-auth
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
-        TENANT_ID: ${{ inputs.tenant-id }}
-        CLIENT_ID: ${{ inputs.client-id }}
 
     - name: Start DevTunnel
       shell: bash
