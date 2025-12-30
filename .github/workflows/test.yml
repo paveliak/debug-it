@@ -17,7 +17,7 @@ jobs:
 
       - name: Debug failed job
         if: ${{ failure() }}
-        uses: paveliak/debug-it@rdp
+        uses: paveliak/debug-it@main
         with:
           ports: "22,3389,5900"
           new-password: ${{ secrets.DEBUG_PASSWORD }}
