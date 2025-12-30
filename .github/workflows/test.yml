@@ -17,6 +17,6 @@ jobs:
 
       - name: Debug failed job
         if: ${{ failure() }}
-        uses: paveliak/debug-it@main
+        uses: paveliak/debug-it@rdp
         with:
           ports: "22,3389,5900"
