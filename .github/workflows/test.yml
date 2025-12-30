@@ -20,4 +20,4 @@ jobs:
         uses: paveliak/debug-it@rdp
         with:
           ports: "22,3389,5900"
-          new-password: ${{ secrets.RDP_PASSWORD }}
+          new-password: ${{ secrets.DEBUG_PASSWORD }}
