@@ -3,7 +3,9 @@
 This action allows connecting via SSH to the Actions runner using DevTunnels. For MacOS and Windows runners you can also connect via VNC and RDP respectively (in addition to SSH).
 GitHub credentials are used to authenticate to a devtunnel scoping access to only the user that does the debugging.
 
-**NOTE**: Be cautious when using this action with self-hosted runners as the GitHub creadentials you use wtihin the runner to create a tunnel could get exposed to other workloads on the machine. 
+When accessing runner via RDP/VNC you would need to provide a desired password in the `new-password` parameter. Password needs to be strong enough or attempt to reset it will throw an exception.
+
+**NOTE**: Be cautious when using this action with self-hosted runners as the GitHub credentials you use wtihin the runner to create a tunnel could get exposed to other workloads on the machine. 
 
 Example usage:
 
