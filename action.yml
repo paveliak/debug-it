@@ -13,6 +13,9 @@ inputs:
     description: "Devtunnel expiry"
     required: false
     default: "1h"
+  new-password:
+    description: "Reset user password for the RDP/VNC connection"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -36,6 +39,27 @@ runs:
       run: |
         cp "$HOME\.ssh\authorized_keys" "$env:ProgramData\ssh\administrators_authorized_keys"
         icacls "$env:ProgramData\ssh\administrators_authorized_keys" /inheritance:r /grant "Administrators:F" /grant "SYSTEM:F"
+
+    - name: Prepare RDP
+      if: ${{ runner.os == 'Windows' }}
+      shell: pwsh
+      run: |
+        if ($env:NEW_PASSWORD -ne '') {
+          $userPasswordSecure = ConvertTo-SecureString $env:NEW_PASSWORD -AsPlainText -Force
+          Set-LocalUser -Name $env:USERNAME -Password $userPasswordSecure
+        }
+
+        $regPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
+        $regName = 'fSingleSessionPerUser'
+        $regValue = 0
+
+        if (-not (Test-Path $regPath)) {
+          New-Item -Path $regPath -Force | Out-Null
+        }
+
+        New-ItemProperty -Path $regPath -Name $regName -PropertyType DWord -Value $regValue -Force
+      env:
+        NEW_PASSWORD: ${{ inputs.new-password }}
 
     - name: Install DevTunnel CLI (windows)
       id: install-win
