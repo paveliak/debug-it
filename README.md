@@ -5,7 +5,7 @@ GitHub credentials are used to authenticate to a devtunnel scoping access to onl
 
 **NOTE**: Be cautious when using this action with self-hosted runners as the GitHub credentials you use wtihin the runner to create a tunnel could get exposed to other workloads on the machine. 
 
-When accessing a runner via RDP/VNC you would need to provide a password to a remote machine. This action resets VM password to the one you specify in the (optional) `new-password` parameter. Password needs to be strong enough or attempt to reset it might throw an exception. You do not need providing this parameter for the SSH access as it relies on the public key authentication. Public key is retrieved from the `https://github.com/<user>.keys` endpoint so make sure you [add SSH public key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
+When accessing a runner via RDP/VNC you would need to provide a password to a remote machine. This action resets VM password to the one you specify in the (optional) `new-password` parameter. Password needs to be strong enough or attempt to reset it might throw an exception. You do not need providing this parameter for the SSH access as it relies on the public key authentication. Public key is retrieved from the `https://github.com/<user>.keys` endpoint for the actor that triggered the workflow (unless you override it in the `authorized-user` parameter), so make sure you [add SSH public key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
 
 ## Example usage:
 
