@@ -7,6 +7,10 @@ GitHub credentials are used to authenticate to a devtunnel scoping access to onl
 
 When accessing a runner via RDP/VNC you would need to provide a password to a remote machine. This action resets VM password to the one you specify in the (optional) `new-password` parameter. Password needs to be strong enough or attempt to reset it might throw an exception. You do not need providing this parameter for the SSH access as it relies on the public key authentication. Public key is retrieved from the `https://github.com/<user>.keys` endpoint for the actor that triggered the workflow (unless you override it in the `authorized-user` parameter), so make sure you [add SSH public key to your GitHub account](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/adding-a-new-ssh-key-to-your-github-account).
 
+When action is executed it await you to authenticate DevTunnel (find the device code in the job logs) and once DevTunnel is created it will keep blocking the job letting you to connect and debug it. Upon completing the debugging you have two options:
+1) Cancel the workflow run
+2) Terminate `devtunnel` process on the VM
+
 ## Example usage:
 
 1. Add this yaml into your workflow. When job fails you can can [rerun it with debugging enabled](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/re-run-workflows-and-jobs#re-running-failed-jobs-in-a-workflow) and that would execute the debugging step. Authenticate to DevTunnel using the device code provided in the job log.
