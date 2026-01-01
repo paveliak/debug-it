@@ -25,4 +25,4 @@ jobs:
 
 2. Copy/paste DevTunnel id from the Actions job log and connect to it with `devtunnel connect <devtunnel-id>` from your local machine
 3. Observe which local port was forwarded (suppose 55555), open another terminal window and connect with `ssh -p 55555 runner@127.0.0.1` (on Windows the user is `runneradmin`)
-4. For the RDP and VNC connect to 127.0.0.1:3389 and 127.0.0.1:5900 respectively
+4. For the RDP and VNC connect to 127.0.0.1:3389 and 127.0.0.1:5900 respectively (make sure to forward those ports as by default only port 22 is forwarded)
