@@ -119,10 +119,9 @@ runs:
         fi
 
         if [ "$REPO_OWNER" != "$EXPECTED_USER" ]; then
-          gh api -i /orgs/$REPO_OWNER/members/$EXPECTED_USER
-          RESPONSE_CODE=$(gh api -i /orgs/$REPO_OWNER/members/$EXPECTED_USER | head -n 1 | awk '{print $2}')
-          if [ "$RESPONSE_CODE" != "204" ]; then
-            echo "$EXPECTED_USER must be a member of $REPO_OWNER"
+          PERMISSION=$(gh api /repos/$REPO_NWO/collaborators/$EXPECTED_USER/permission | jq -r ".permission")
+          if [ "$PERMISSION" != "admin" ]; then
+            echo "Must be repo admin to debug the job"
             exit 1
           fi
         fi
@@ -130,7 +129,7 @@ runs:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         AUTHORIZED_USER: ${{ inputs.authorized-user }}
         CURRENT_USER: ${{ github.actor }}
-        REPO_OWNER: ${{ github.repository_owner }}
+        REPO_NWO: ${{ github.repository }}
         GH_TOKEN: ${{ github.token }}
 
     - name: Start DevTunnel
