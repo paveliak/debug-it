@@ -119,6 +119,7 @@ runs:
         fi
 
         if [ "$REPO_OWNER" != "$EXPECTED_USER" ]; then
+          gh api -i /orgs/$REPO_OWNER/members/$EXPECTED_USER
           RESPONSE_CODE=$(gh api -i /orgs/$REPO_OWNER/members/$EXPECTED_USER | head -n 1 | awk '{print $2}')
           if [ "$RESPONSE_CODE" != "204" ]; then
             echo "$EXPECTED_USER must be a member of $REPO_OWNER"
