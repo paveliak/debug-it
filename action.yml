@@ -23,7 +23,7 @@ runs:
       shell: bash
       run: |
         EXPECTED_USER=${AUTHORIZED_USER:-$CURRENT_USER}
-        PERMISSION=$(gh api /repos/$REPO_NWO/collaborators/$EXPECTED_USER/permission | jq -r ".permission")
+        PERMISSION=$(gh api repos/$REPO_NWO/collaborators/$EXPECTED_USER/permission | jq -r ".permission")
         if [ "$PERMISSION" != "admin" ]; then
           echo "Must be repo admin to debug the job"
           exit 1
