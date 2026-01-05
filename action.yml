@@ -110,8 +110,27 @@ runs:
       shell: bash
       run: |
         $DEVTUNNEL user login --github --use-device-code-auth
+
+        LOGGED_USER=$($DEVTUNNEL user show --json | jq -r ".username")
+        EXPECTED_USER=${AUTHORIZED_USER:-$CURRENT_USER}
+        if [ "$LOGGED_USER" != "EXPECTED_USER" ]; then
+          echo "Must login as $EXPECTED_USER"
+          exit 1
+        fi
+
+        if [ "$REPO_OWNER" != "$EXPECTED_USER" ]; then
+          RESPONSE_CODE=$(gh api -i /orgs/$REPO_OWNER/members/$EXPECTED_USER | head -n 1 | awk '{print $2}')
+          if [ "$RESPONSE_CODE" != "204" ]; then
+            echo "$EXPECTED_USER must be a member of $REPO_OWNER"
+            exit 1
+          fi
+        fi
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
+        AUTHORIZED_USER: ${{ inputs.authorized-user }}
+        CURRENT_USER: ${{ github.actor }}
+        REPO_OWNER: ${{ github.repository_owner }}
+        GH_TOKEN: ${{ github.token }}
 
     - name: Start DevTunnel
       shell: bash
