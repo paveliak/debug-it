@@ -19,6 +19,21 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Check permissions
+      shell: bash
+      run: |
+        EXPECTED_USER=${AUTHORIZED_USER:-$CURRENT_USER}
+        PERMISSION=$(gh api /repos/$REPO_NWO/collaborators/$EXPECTED_USER/permission | jq -r ".permission")
+        if [ "$PERMISSION" != "admin" ]; then
+          echo "Must be repo admin to debug the job"
+          exit 1
+        fi
+      env:
+        AUTHORIZED_USER: ${{ inputs.authorized-user }}
+        CURRENT_USER: ${{ github.actor }}
+        REPO_NWO: ${{ github.repository }}
+        GH_TOKEN: ${{ github.token }}
+
     - name: Add SSH keys
       shell: bash
       run: |
@@ -117,20 +132,10 @@ runs:
           echo "Must login as $EXPECTED_USER"
           exit 1
         fi
-
-        if [ "$REPO_OWNER" != "$EXPECTED_USER" ]; then
-          PERMISSION=$(gh api /repos/$REPO_NWO/collaborators/$EXPECTED_USER/permission | jq -r ".permission")
-          if [ "$PERMISSION" != "admin" ]; then
-            echo "Must be repo admin to debug the job"
-            exit 1
-          fi
-        fi
       env:
         DEVTUNNEL: ${{ steps.install.outputs.pathname }}
         AUTHORIZED_USER: ${{ inputs.authorized-user }}
         CURRENT_USER: ${{ github.actor }}
-        REPO_NWO: ${{ github.repository }}
-        GH_TOKEN: ${{ github.token }}
 
     - name: Start DevTunnel
       shell: bash
