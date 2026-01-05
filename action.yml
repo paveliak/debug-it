@@ -124,7 +124,7 @@ runs:
     - name: Login to DevTunnels
       shell: bash
       run: |
-        LOGGED_USER=($DEVTUNNEL user login --github --use-device-code-auth --json | jq -r ".username")
+        LOGGED_USER=$($DEVTUNNEL user login --github --use-device-code-auth --json | jq -r ".username")
         EXPECTED_USER=${AUTHORIZED_USER:-$CURRENT_USER}
         if [ "$LOGGED_USER" != "$EXPECTED_USER" ]; then
           echo "Must login as $EXPECTED_USER"
