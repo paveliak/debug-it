@@ -66,8 +66,8 @@ runs:
       shell: bash
       run: |
         if [ -n "$NEW_PASSWORD" ]; then
-          #RUNNER_PASSWORD=$(security find-generic-password -a "$USER" -s GitHubActions -l RunnerPassword -w)
-          #$HOME/bootstrap/change_password "$USER" "$RUNNER_PASSWORD" "$NEW_PASSWORD"
+          RUNNER_PASSWORD=$(security find-generic-password -a "$USER" -s GitHubActions -l RunnerPassword -w)
+          $HOME/bootstrap/change_password "$USER" "$RUNNER_PASSWORD" "$NEW_PASSWORD"
         fi
 
         sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
