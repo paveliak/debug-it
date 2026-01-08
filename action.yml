@@ -65,10 +65,22 @@ runs:
       if: ${{ runner.os == 'macOS' }}
       shell: bash
       run: |
-        RUNNER_PASSWORD=$(security find-generic-password -a "$USER" -s GitHubActions -l RunnerPassword -w)
-        echo $RUNNER_PASSWORD
-        echo $NEW_PASSWORD
-        $HOME/bootstrap/change_password "$USER" "$RUNNER_PASSWORD" "$NEW_PASSWORD"
+        if [ -n "$NEW_PASSWORD" ]; then
+          RUNNER_PASSWORD=$(security find-generic-password -a "$USER" -s GitHubActions -l RunnerPassword -w)
+          $HOME/bootstrap/change_password "$USER" "$RUNNER_PASSWORD" "$NEW_PASSWORD"
+        fi
+
+        sudo launchctl load -w /System/Library/LaunchDaemons/com.apple.screensharing.plist
+
+        epoch="$(date +%s)"
+        sudo sqlite3 "${DB_PATH}" \
+          "BEGIN TRANSACTION; \
+           DELETE FROM access WHERE client = 'com.apple.screensharing.agent'; \
+           COMMIT; \
+           BEGIN TRANSACTION; \
+           INSERT INTO access(service,client,client_type,auth_value,auth_reason,auth_version,indirect_object_identifier_type,flags,last_modified,last_reminded) VALUES('kTCCServicePostEvent','com.apple.screensharing.agent',0,2,4,1,0,0,${epoch},${epoch}); \
+           INSERT INTO access(service,client,client_type,auth_value,auth_reason,auth_version,indirect_object_identifier_type,flags,last_modified,last_reminded) VALUES('kTCCServiceScreenCapture','com.apple.screensharing.agent',0,2,4,1,0,0,${epoch},${epoch}); \
+           COMMIT;"
       env:
         DB_PATH: "/Library/Application Support/com.apple.TCC/TCC.db"
         NEW_PASSWORD: ${{ inputs.new-password }}
