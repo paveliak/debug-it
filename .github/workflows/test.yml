@@ -12,12 +12,14 @@ jobs:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
+      - uses: actions/checkout@v6
+    
       - name: Fail the job
         run: exit 1
 
       - name: Debug failed job
         if: ${{ failure() }}
-        uses: paveliak/debug-it@main
+        uses: ./
         with:
           ports: "22,3389,5900"
           new-password: ${{ secrets.DEBUG_PASSWORD }}
