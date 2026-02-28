@@ -34,6 +34,13 @@ runs:
         REPO_NWO: ${{ github.repository }}
         GH_TOKEN: ${{ github.token }}
 
+    - name: Start SSH
+      if: ${{}}
+      shell: bash
+      run: |
+        sudo mkdir -p /run/sshd
+        sudo /usr/sbin/sshd -D &
+      
     - name: Add SSH keys
       shell: bash
       run: |
