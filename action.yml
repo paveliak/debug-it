@@ -34,6 +34,16 @@ runs:
         REPO_NWO: ${{ github.repository }}
         GH_TOKEN: ${{ github.token }}
 
+    - name: Start SSH
+      if: ${{ runner.os == 'Linux' }}
+      shell: bash
+      run: |
+        if ! pgrep sshd > /dev/null 2>&1; then
+          echo "Starting SSH..."
+          sudo mkdir -p /run/sshd
+          sudo /usr/sbin/sshd -D &
+        fi
+
     - name: Add SSH keys
       shell: bash
       run: |
