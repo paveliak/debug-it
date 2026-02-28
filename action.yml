@@ -35,12 +35,14 @@ runs:
         GH_TOKEN: ${{ github.token }}
 
     - name: Start SSH
-      if: ${{}}
       shell: bash
       run: |
-        sudo mkdir -p /run/sshd
-        sudo /usr/sbin/sshd -D &
-      
+        if ! pgrep sshd > /dev/null 2>&1; then
+          echo "Starting SSH..."
+          sudo mkdir -p /run/sshd
+          sudo /usr/sbin/sshd -D &
+        fi
+
     - name: Add SSH keys
       shell: bash
       run: |
