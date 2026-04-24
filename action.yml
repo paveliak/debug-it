@@ -34,6 +34,12 @@ runs:
         REPO_NWO: ${{ github.repository }}
         GH_TOKEN: ${{ github.token }}
 
+    - name: Install SSH
+      if: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' }}
+      shell: pwsh
+      run: |
+        dism /online /Add-Capability /CapabilityName:OpenSSH.Server~~~~0.0.1.0
+
     - name: Start SSH
       if: ${{ runner.os == 'Linux' }}
       shell: bash
@@ -43,6 +49,12 @@ runs:
           sudo mkdir -p /run/sshd
           sudo /usr/sbin/sshd -D &
         fi
+
+    - name: Start SSH
+      if: ${{ runner.os == 'Windows' && runner.arch == 'ARM64' }}
+      shell: pwsh
+      run: |
+        sc start sshd
 
     - name: Add SSH keys
       shell: bash
