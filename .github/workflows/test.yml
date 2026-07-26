@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v6
     
       - name: Fail the job
-        run: exit 1
+        run: sudo cat /etc/fstab
 
       - name: Debug failed job
         if: ${{ failure() }}
